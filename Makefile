@@ -22,5 +22,9 @@ image: build.lambda Dockerfile
 		--platform linux/amd64,linux/arm64 \
 		.
 
-push: image
-	docker push ghcr.io/kayac/asg-lifecycle-hook-ec2:$(VERSION)
+push: build.lambda Dockerfile
+	docker buildx build \
+		--push \
+		--tag ghcr.io/kayac/asg-lifecycle-hook-ec2:$(VERSION) \
+		--platform linux/amd64,linux/arm64 \
+		.
