@@ -17,7 +17,7 @@ clean:
 
 image: build.lambda Dockerfile
 	docker buildx build \
-		--rm \
+		--load \
 		--tag ghcr.io/kayac/asg-lifecycle-hook-ec2:$(VERSION) \
 		--platform linux/amd64,linux/arm64 \
 		.
