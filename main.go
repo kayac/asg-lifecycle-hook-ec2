@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 	_ "time/tzdata"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -81,6 +83,14 @@ func handler(ctx context.Context, event *events.AutoScalingEvent) error {
 	}
 	if err := drainInstance(sess, asgSvc, asgName, instanceID); err != nil {
 		return err
+	}
+	if s := os.Getenv("WAIT_SECONDS"); s != "" {
+		if n, err := strconv.ParseInt(s, 10, 64); err == nil {
+			log.Printf("[info] waiting %d seconds", n)
+			time.Sleep(time.Duration(n) * time.Second)
+		} else {
+			log.Printf("[error] invalid WAIT_SECONDS: %s, %s", s, err)
+		}
 	}
 	if err := complate(asgSvc, event); err != nil {
 		return err
